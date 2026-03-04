@@ -117,5 +117,7 @@ def train(games, net, depth, batch):
             torch.save(net.state_dict(), f'chess_model_{i}.pth')
             print(f"game {i}, loss: {batchLoss}")
 
+games = input("enter number of games: ")
+batches = input("enter number of batches")
 
-train(games=100, net=net, depth=1, batch=50)
+train(games=games, net=net, depth=1, batch=batches)
