@@ -80,6 +80,8 @@ def playGame(net, depth , epsilon):
     return positions, reward
     
 
+    
+
 loss_fn = nn.MSELoss()
 teacher = torch.optim.Adam(params= net.parameters(), lr=0.001)
 
@@ -88,42 +90,40 @@ def train(games, net, depth, batch):
     tensors = []
     labels = []
     b = 0
-
     eps = 1.0
     epsMin = .05
     epsDec = .995
 
     for i in range(games):
-        positions, reward = playGame(net= net , depth= depth, epsilon=eps)
-        eps = max(epsMin , eps*epsDec)
-        for p , t in positions:
+        print(f"starting game {i}")  # is the loop running?
+        
+        positions, reward = playGame(net=net, depth=depth, epsilon=eps)
+        print(f"game {i} done, positions: {len(positions)}, reward: {reward}")
+        
+        eps = max(epsMin, eps * epsDec)
+        
+        for p, t in positions:
             tensors.append(p)
             if t == chess.WHITE:
                 labels.append(reward)
             else:
                 labels.append(-reward)
-
-        batchLoss = None
+        
+        print(f"tensors: {len(tensors)}, b: {b}, batch: {batch}")  # is b incrementing?
+        
         b += 1
         if b == batch:
+            print("batch triggered")  # is this ever reached?
             b = 0
             ts = torch.tensor(np.array(tensors)).to(device)
-            labs = torch.tensor(labels , dtype=torch.float32).unsqueeze(1).to(device)
-
+            labs = torch.tensor(labels, dtype=torch.float32).unsqueeze(1).to(device)
             tensors = []
             labels = []
-
             teacher.zero_grad()
-            output = loss_fn(net(ts) , labs)
-            batchLoss = output.item()
+            output = loss_fn(net(ts), labs)
             output.backward()
             teacher.step()
+            print(f"loss: {output.item():.4f}")
 
-        if i % batch == 0 and i >= batch:
-            torch.save(net.state_dict(), f'chess_model_{i}.pth')
-            print(f"game {i}, loss: {batchLoss}")
 
-games = int(input("enter number of games: "))
-batches = int(input("enter number of batches"))
-
-train(games=games, net=net, depth=1, batch=batches)
+train(games=5, net=net, depth=1, batch=5)
