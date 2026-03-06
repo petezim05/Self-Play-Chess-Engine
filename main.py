@@ -78,7 +78,7 @@ def playGame(net, depth , epsilon):
     
     if outcome.winner == chess.WHITE: reward = 1
     if outcome.winner == chess.BLACK: reward = -1
-    if outcome.winner is None: reward = 0
+    if outcome.winner is None: reward = -.25
 
     return positions, reward
     
