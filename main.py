@@ -12,7 +12,7 @@ import os
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 net = cb.RecConNet().to(device)
-_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chess_model_pretrained.pth')
+_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models/chess_model_pretrained.pth')
 net.load_state_dict(torch.load(_model_path, map_location=device, weights_only=True))
 print("Loaded existing model weights.")
 
@@ -123,7 +123,9 @@ def train(games, net, depth, batch):
             teacher.step()
 
         if i % batch == 0 and i >= batch:
-            torch.save(net.state_dict(), f'models/chess_model_{i}.pth')
+            _models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models')
+            os.makedirs(_models_dir, exist_ok=True)
+            torch.save(net.state_dict(), os.path.join(_models_dir, f'chess_model_{i}.pth'))
             print(f"game {i}, loss: {batchLoss}")
 
 games = int(input("enter number of games: "))
