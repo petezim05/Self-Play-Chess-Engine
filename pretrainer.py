@@ -12,6 +12,11 @@ import torch.optim as optim
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 net = cb.RecConNet().to(device)
 
+import os
+#if os.path.exists('chess_model_pretrained.pth'):
+#    net.load_state_dict(torch.load('chess_model_pretrained.pth', map_location=device, weights_only=True))
+#    print("Loaded existing model weights.")
+
 
 
 loss_fn = nn.MSELoss()
@@ -40,9 +45,8 @@ def pretrain_from_pgn(net, pgn_path):
             labels = []
 
             for move in game.mainline_moves():
-                if board.turn == winner:
-                    tensors.append(cF.board_to_tensor(board))
-                    labels.append(1.0)
+                tensors.append(cF.board_to_tensor(board))
+                labels.append(1.0 if board.turn == winner else 0.0)
                 board.push(move)
 
             if not tensors:

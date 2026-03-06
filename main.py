@@ -11,6 +11,8 @@ import random
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 net = cb.RecConNet().to(device)
+net.load_state_dict(torch.load('chess_model_pretrained.pth', map_location=device, weights_only=True))
+print("Loaded existing model weights.")
 
 
 def minimax(board, depth, net):
@@ -24,7 +26,8 @@ def minimax(board, depth, net):
     
     if depth == 0:
         tens = torch.tensor(cF.board_to_tensor(board)).unsqueeze(0).to(device)
-        return net(tens).item()
+        with torch.no_grad():
+            return net(tens).item()
     
     bestVal = float('-inf')
 
@@ -67,8 +70,6 @@ def playGame(net, depth , epsilon):
         
         positions.append((cF.board_to_tensor(board), board.turn))
         board.push(pickMove(board, depth, net, epsilon))
-        positions.append((cF.board_to_tensor(board), board.turn))
-        board.push(pickMove(board, depth , net , epsilon))
         
     
     outcome = board.outcome()
@@ -120,7 +121,7 @@ def train(games, net, depth, batch):
             teacher.step()
 
         if i % batch == 0 and i >= batch:
-            torch.save(net.state_dict(), f'chess_model_{i}.pth')
+            torch.save(net.state_dict(), f'models/chess_model_{i}.pth')
             print(f"game {i}, loss: {batchLoss}")
 
 games = int(input("enter number of games: "))
