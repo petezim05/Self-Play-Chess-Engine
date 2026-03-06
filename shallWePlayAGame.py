@@ -7,7 +7,7 @@ from main import pickMove
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 net = cb.RecConNet().to(device)
-net.load_state_dict(torch.load('chess_model_pretrained.pth', map_location=device))
+net.load_state_dict(torch.load('models/chess_model_700.pth', map_location=device))
 net.eval()
 
 board = chess.Board()

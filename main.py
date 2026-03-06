@@ -91,6 +91,7 @@ def train(games, net, depth, batch):
     tensors = []
     labels = []
     b = 0
+    batchLoss = None
 
     eps = 1.0
     epsMin = .05
@@ -106,7 +107,6 @@ def train(games, net, depth, batch):
             else:
                 labels.append(-reward)
 
-        batchLoss = None
         b += 1
         if b == batch:
             b = 0
