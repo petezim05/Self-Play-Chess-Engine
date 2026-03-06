@@ -7,11 +7,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import random
+import os
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 net = cb.RecConNet().to(device)
-net.load_state_dict(torch.load('chess_model_pretrained.pth', map_location=device, weights_only=True))
+_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chess_model_pretrained.pth')
+net.load_state_dict(torch.load(_model_path, map_location=device, weights_only=True))
 print("Loaded existing model weights.")
 
 
