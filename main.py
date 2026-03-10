@@ -1,5 +1,5 @@
 import numpy as np
-import chessBot0 as cb
+import chessBot1 as cb
 import torch
 import chess
 import chessFunctions as cF
@@ -129,6 +129,6 @@ def train(games, net, depth, batch):
             print(f"game {i}, loss: {batchLoss}")
 
 games = int(input("enter number of games: "))
-batches = int(input("enter number of batches"))
+batches = int(input("enter batch size: "))
 
 train(games=games, net=net, depth=1, batch=batches)

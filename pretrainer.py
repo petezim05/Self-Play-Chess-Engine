@@ -1,5 +1,5 @@
 import numpy as np
-import chessBot0 as cb
+import chessBot1 as cb
 import torch
 import chess
 import chess.pgn
